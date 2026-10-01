@@ -253,7 +253,7 @@
 
     <header>
         <h1>Cool Age Holidays</h1>
-        <p class="subtitle">Discover every mathematical & cosmic milestone in your lifetime</p>
+        <p class="subtitle">Dense, meaningful age milestones calculated for your lifetime</p>
     </header>
 
     <div class="card">
@@ -266,10 +266,10 @@
                 <label for="max-results">Max Holidays to Show</label>
                 <select id="max-results">
                     <option value="10">10 Holidays</option>
-                    <option value="25" selected>25 Holidays</option>
+                    <option value="25">25 Holidays</option>
                     <option value="50">50 Holidays</option>
-                    <option value="100">100 Holidays</option>
-                    <option value="200">200 Holidays</option>
+                    <option value="100" selected>100 Holidays (~6 Months)</option>
+                    <option value="200">200 Holidays (~1 Year)</option>
                 </select>
             </div>
         </div>
@@ -285,27 +285,27 @@
         <div class="categories-grid">
             <label class="checkbox-label">
                 <input type="checkbox" class="cat-checkbox" value="standard" checked>
-                Standard Time (Seconds, Hours, Days, Weeks)
+                Standard Time (Days, Weeks, Months, Hours)
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" class="cat-checkbox" value="lunar" checked>
+                Lunar & Moons (Full Moons Lived)
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" class="cat-checkbox" value="si" checked>
-                SI Prefixes (Kilo-, Mega-, Gigaseconds)
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" class="cat-checkbox" value="tech" checked>
-                Nerd & Tech (Microcenturies, Beats)
+                SI Time (Kiloseconds & Megaseconds)
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" class="cat-checkbox" value="nature" checked>
-                Nature & Bio (Dog/Cat Years, Heartbeats, Sleep)
+                Pets & Body (Dog/Cat Years, Sleep Cycles)
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" class="cat-checkbox" value="cosmic" checked>
-                Cosmic (Mars Years, Jupiter, Light-Distance)
+                Planetary Orbits (Mars, Venus, Mercury)
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" class="cat-checkbox" value="historical" checked>
-                Historical (Olympiads, Zodiac Cycles, Jubilees)
+                Historical (Olympiads & Jubilees)
             </label>
         </div>
 
@@ -321,138 +321,256 @@
     </div>
 
 <script>
-// --- 1. STATIC LOOKUP DATA ---
-const POP_CULTURE_NUMS = new Set([42, 69, 420, 666, 777, 1337, 80085, 8675309]);
-const CONSTANTS = new Set([314, 3141, 31415, 314159, 2718, 27182, 271828, 1618, 161803]);
-
-// --- 2. ADVANCED TARGET GENERATORS ---
-function nextPowerOf10(num) {
-    return Math.pow(10, Math.ceil(Math.log10(num + 0.00001)));
-}
-
-function nextSquare(num) {
-    return Math.pow(Math.floor(Math.sqrt(num)) + 1, 2);
-}
-
-function nextRepdigit(num) {
-    let n = Math.floor(num) + 1;
-    let s = n.toString();
-    let firstDigit = parseInt(s[0]);
-    let candidate = parseInt(firstDigit.toString().repeat(s.length));
-    
-    if (candidate > num) return candidate;
-    firstDigit++;
-    if (firstDigit > 9) return parseInt("1".repeat(s.length + 1));
-    return parseInt(firstDigit.toString().repeat(s.length));
-}
-
-function nextPalindrome(num) {
-    let current = Math.floor(num) + 1;
-    for (let i = current; i < current + 1000000; i++) {
-        let s = i.toString();
-        if (s === s.split('').reverse().join('')) return i;
-    }
-    return null;
-}
-
-function nextRoundNumber(num) {
-    if (num < 10) return Math.floor(num) + 1;
-    let magnitude = Math.pow(10, Math.floor(Math.log10(num)));
-    let normalized = num / magnitude;
-    
-    // Steps: 1.0 -> 2.5 -> 5.0 -> 7.5 -> 10.0 -> etc.
-    let steps = [1.0, 2.0, 2.5, 5.0, 7.5, 10.0, 15.0, 20.0, 25.0, 50.0, 75.0, 100.0];
-    let nextStep = steps.find(s => s > normalized);
-    
-    if (!nextStep) return magnitude * 10;
-    return Math.round(nextStep * magnitude);
-}
-
-function nextFibonacci(num) {
-    let a = 1, b = 1;
-    while (b <= num) {
-        let temp = a + b;
-        a = b;
-        b = temp;
-    }
-    return b;
-}
-
-function nextTriangular(num) {
-    let n = Math.floor((-1 + Math.sqrt(1 + 8 * num)) / 2) + 1;
-    return (n * (n + 1)) / 2;
-}
-
-function nextPowerOf2(num) {
-    let p = Math.ceil(Math.log2(num + 0.00001));
-    let val = Math.pow(2, p);
-    return val > num ? val : Math.pow(2, p + 1);
-}
-
-function nextSequential(num) {
-    const sequences = [
-        123, 1234, 12345, 123456, 1234567, 12345678, 123456789,
-        321, 4321, 54321, 654321, 7654321, 87654321, 987654321
-    ];
-    return sequences.find(s => s > num) || null;
-}
-
-function nextCleanFraction(num, step = 0.25) {
-    return (Math.floor(num / step) + 1) * step;
-}
-
-function getNextStaticNumber(currentVal, numberSet) {
-    const sorted = Array.from(numberSet).sort((a, b) => a - b);
-    return sorted.find(n => n > currentVal) || null;
-}
-
-// --- 3. METRIC DEFINITIONS ---
+// --- TIME CONSTANTS ---
 const msPerSecond = 1000;
 const msPerMinute = msPerSecond * 60;
 const msPerHour = msPerMinute * 60;
 const msPerDay = msPerHour * 24;
+const msPerWeek = msPerDay * 7;
 const msPerYear = msPerDay * 365.2425;
+const msPerLunarCycle = msPerDay * 29.53059; // Synodic Month
 
+// --- HELPER MATHEMATICAL DETECTORS ---
+function isRepdigit(n) {
+    if (n < 10) return false;
+    let s = Math.floor(n).toString();
+    return s.split('').every(c => c === s[0]);
+}
+
+function isPalindrome(n) {
+    if (n < 100) return false;
+    let s = Math.floor(n).toString();
+    return s === s.split('').reverse().join('');
+}
+
+function isPowerOf2(n) {
+    return n > 0 && (n & (n - 1)) === 0;
+}
+
+function isFibonacci(n) {
+    if (n < 5) return false;
+    let isSquare = x => Math.sqrt(x) % 1 === 0;
+    return isSquare(5 * n * n + 4) || isSquare(5 * n * n - 4);
+}
+
+// --- DENSE METRIC DEFINITIONS WITH SPECIFIC STEPPING ---
 const Metrics = [
     // Standard Time
-    { name: "Seconds", ms: msPerSecond, mode: "high_frequency", category: "standard" },
-    { name: "Hours", ms: msPerHour, mode: "standard", category: "standard" },
-    { name: "Days", ms: msPerDay, mode: "standard", category: "standard" },
-    { name: "Weeks", ms: msPerDay * 7, mode: "standard", category: "standard" },
-    { name: "Fortnights", ms: msPerDay * 14, mode: "standard", category: "standard" },
-    { name: "Months", ms: msPerYear / 12, mode: "standard", category: "standard" },
+    {
+        name: "Days",
+        ms: msPerDay,
+        category: "standard",
+        getMilestones: (current) => {
+            let list = [];
+            let start = Math.floor(current) + 1;
+            for (let d = start; d <= start + 400; d++) {
+                if (d % 25 === 0) list.push({ val: d, label: "25-Day Interval" });
+                else if (isRepdigit(d)) list.push({ val: d, label: "Repdigit Days" });
+                else if (isPalindrome(d)) list.push({ val: d, label: "Palindrome Days" });
+                else if (isPowerOf2(d)) list.push({ val: d, label: "Power of 2 Days" });
+                else if (isFibonacci(d)) list.push({ val: d, label: "Fibonacci Days" });
+            }
+            return list;
+        }
+    },
+    {
+        name: "Weeks",
+        ms: msPerWeek,
+        category: "standard",
+        getMilestones: (current) => {
+            let list = [];
+            let start = Math.floor(current) + 1;
+            for (let w = start; w <= start + 60; w++) {
+                if (w % 5 === 0) list.push({ val: w, label: "5-Week Interval" });
+                else if (isRepdigit(w)) list.push({ val: w, label: "Repdigit Weeks" });
+                else if (isPalindrome(w)) list.push({ val: w, label: "Palindrome Weeks" });
+            }
+            return list;
+        }
+    },
+    {
+        name: "Fortnights",
+        ms: msPerDay * 14,
+        category: "standard",
+        getMilestones: (current) => {
+            let list = [];
+            let start = Math.floor(current) + 1;
+            for (let f = start; f <= start + 30; f++) {
+                if (f % 5 === 0 || isRepdigit(f) || isPalindrome(f)) {
+                    list.push({ val: f, label: "Fortnight Milestone" });
+                }
+            }
+            return list;
+        }
+    },
+    {
+        name: "Hours",
+        ms: msPerHour,
+        category: "standard",
+        getMilestones: (current) => {
+            let list = [];
+            let start = Math.floor(current / 500) * 500 + 500;
+            for (let h = start; h <= start + 10000; h += 500) {
+                let label = (h % 5000 === 0) ? "5,000 Hour Milestone" : "500 Hour Milestone";
+                list.push({ val: h, label: label });
+            }
+            return list;
+        }
+    },
 
-    // SI Prefixes
-    { name: "Kiloseconds (ks)", ms: msPerSecond * 1000, mode: "standard", category: "si" },
-    { name: "Megaseconds (Ms)", ms: msPerSecond * 1000000, mode: "standard", category: "si" },
-    { name: "Gigaseconds (Gs)", ms: msPerSecond * 1000000000, mode: "macro", category: "si" },
+    // Lunar & Moons
+    {
+        name: "Full Moons Lived",
+        ms: msPerLunarCycle,
+        category: "lunar",
+        getMilestones: (current) => {
+            let list = [];
+            let start = Math.floor(current) + 1;
+            for (let m = start; m <= start + 20; m++) {
+                let label = (m % 10 === 0) ? "Decade Moon Milestone" : "Lunar Cycle";
+                list.push({ val: m, label: label });
+            }
+            return list;
+        }
+    },
 
-    // Tech & Nerd
-    { name: "Microcenturies", ms: (100 * msPerYear) / 1000000, mode: "standard", category: "tech" },
-    { name: "Swatch Beats", ms: 86400, mode: "high_frequency", category: "tech" },
+    // SI Units
+    {
+        name: "Kiloseconds (ks)",
+        ms: msPerSecond * 1000,
+        category: "si",
+        getMilestones: (current) => {
+            let list = [];
+            let start = Math.floor(current / 2500) * 2500 + 2500;
+            for (let ks = start; ks <= start + 50000; ks += 2500) {
+                let label = (ks % 10000 === 0) ? "10,000 ks Milestone" : "2,500 ks Interval";
+                list.push({ val: ks, label: label });
+            }
+            return list;
+        }
+    },
+    {
+        name: "Megaseconds (Ms)",
+        ms: msPerSecond * 1000000,
+        category: "si",
+        getMilestones: (current) => {
+            let list = [];
+            let start = Math.floor(current / 5) * 5 + 5;
+            for (let ms = start; ms <= start + 100; ms += 5) {
+                let label = (ms % 25 === 0) ? "25 Ms Milestone" : "5 Ms Step";
+                list.push({ val: ms, label: label });
+            }
+            return list;
+        }
+    },
 
-    // Nature & Biological
-    { name: "Dog Years", ms: msPerYear / 7, mode: "standard", category: "nature" },
-    { name: "Cat Years", ms: msPerYear / 6, mode: "standard", category: "nature" },
-    { name: "Heartbeats (~70 bpm)", ms: msPerMinute / 70, mode: "high_frequency", category: "nature" },
-    { name: "Sleep Cycles (~90m)", ms: msPerMinute * 90, mode: "standard", category: "nature" },
+    // Bio & Pets
+    {
+        name: "Dog Years",
+        ms: msPerYear / 7,
+        category: "nature",
+        getMilestones: (current) => {
+            let list = [];
+            let start = Math.floor(current * 4) + 1;
+            for (let q = start; q <= start + 30; q++) {
+                let val = q / 4;
+                if (val % 1 === 0 || val % 0.5 === 0) {
+                    list.push({ val: val, label: "Dog Year Milestone" });
+                }
+            }
+            return list;
+        }
+    },
+    {
+        name: "Cat Years",
+        ms: msPerYear / 6,
+        category: "nature",
+        getMilestones: (current) => {
+            let list = [];
+            let start = Math.floor(current * 2) + 1;
+            for (let h = start; h <= start + 20; h++) {
+                let val = h / 2;
+                list.push({ val: val, label: "Cat Year Milestone" });
+            }
+            return list;
+        }
+    },
+    {
+        name: "Sleep Cycles (~90m)",
+        ms: msPerMinute * 90,
+        category: "nature",
+        getMilestones: (current) => {
+            let list = [];
+            let start = Math.floor(current / 250) * 250 + 250;
+            for (let sc = start; sc <= start + 3000; sc += 250) {
+                list.push({ val: sc, label: "250 Sleep Cycles" });
+            }
+            return list;
+        }
+    },
 
     // Cosmic & Planetary
-    { name: "Mercury Years", ms: msPerDay * 87.97, mode: "macro", category: "cosmic" },
-    { name: "Venus Years", ms: msPerDay * 224.7, mode: "macro", category: "cosmic" },
-    { name: "Mars Years", ms: msPerDay * 686.98, mode: "macro", category: "cosmic" },
-    { name: "Jupiter Years", ms: msPerYear * 11.86, mode: "macro_fractional", category: "cosmic" },
-    { name: "Halley's Comet Orbits", ms: msPerYear * 75.32, mode: "macro_fractional", category: "cosmic" },
-    { name: "Light-Minutes Lived", ms: msPerMinute, mode: "high_frequency", category: "cosmic" },
+    {
+        name: "Mars Years",
+        ms: msPerDay * 686.98,
+        category: "cosmic",
+        getMilestones: (current) => {
+            let list = [];
+            let start = Math.floor(current * 10) + 1;
+            for (let step = start; step <= start + 20; step++) {
+                let val = step / 10; // Every 0.1 Mars Years
+                list.push({ val: val, label: "Mars Orbit Step" });
+            }
+            return list;
+        }
+    },
+    {
+        name: "Venus Years",
+        ms: msPerDay * 224.7,
+        category: "cosmic",
+        getMilestones: (current) => {
+            let list = [];
+            let start = Math.floor(current * 4) + 1;
+            for (let step = start; step <= start + 20; step++) {
+                let val = step / 4; // Every 0.25 Venus Years
+                list.push({ val: val, label: "Venus Orbit Quarter" });
+            }
+            return list;
+        }
+    },
+    {
+        name: "Mercury Years",
+        ms: msPerDay * 87.97,
+        category: "cosmic",
+        getMilestones: (current) => {
+            let list = [];
+            let start = Math.floor(current * 2) + 1;
+            for (let step = start; step <= start + 20; step++) {
+                let val = step / 2; // Every 0.5 Mercury Years
+                list.push({ val: val, label: "Mercury Half-Orbit" });
+            }
+            return list;
+        }
+    },
 
     // Historical & Cultural
-    { name: "Olympiads (4-Yr)", ms: msPerYear * 4, mode: "macro", category: "historical" },
-    { name: "Chinese Zodiac Cycles (12-Yr)", ms: msPerYear * 12, mode: "macro_fractional", category: "historical" },
-    { name: "Scores (20-Yr)", ms: msPerYear * 20, mode: "macro_fractional", category: "historical" },
-    { name: "Jubilees (50-Yr)", ms: msPerYear * 50, mode: "macro_fractional", category: "historical" }
+    {
+        name: "Olympiads (4-Yr)",
+        ms: msPerYear * 4,
+        category: "historical",
+        getMilestones: (current) => {
+            let list = [];
+            let start = Math.floor(current * 10) + 1;
+            for (let step = start; step <= start + 10; step++) {
+                let val = step / 10; // Every 0.1 Olympiads
+                list.push({ val: val, label: "Olympiad Fractional" });
+            }
+            return list;
+        }
+    }
 ];
 
-// --- 4. UI HELPER FUNCTIONS ---
+// --- UI HELPER FUNCTIONS ---
 function toggleCategories(selectState) {
     document.querySelectorAll('.cat-checkbox').forEach(cb => cb.checked = selectState);
 }
@@ -464,7 +582,7 @@ function formatRelativeTime(targetMs, nowMs) {
     if (diffDays === 0) return "Today!";
     if (diffDays === 1) return "Tomorrow";
     if (diffDays < 30) return `In ${diffDays} days`;
-    if (diffDays < 365) return `In ${Math.floor(diffDays / 30)} months`;
+    if (diffDays < 365) return `In ${(diffDays / 30).toFixed(1)} months`;
     return `In ${(diffDays / 365.25).toFixed(1)} years`;
 }
 
@@ -475,7 +593,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('birthdate').value = defaultDate.toISOString().slice(0, 16);
 });
 
-// --- 5. MAIN ENGINE ---
+// --- MAIN CALCULATION ENGINE ---
 function calculateHolidays() {
     const birthInput = document.getElementById('birthdate').value;
     if (!birthInput) return alert("Please enter a birth date and time.");
@@ -487,9 +605,6 @@ function calculateHolidays() {
 
     const msLived = now - birthDate;
     const maxResults = parseInt(document.getElementById('max-results').value);
-    
-    // Strict Cap: Max 115 human lifespan years
-    const maxLifespanMs = birthDate + (115 * msPerYear);
 
     const activeCategories = new Set(
         Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value)
@@ -504,66 +619,18 @@ function calculateHolidays() {
 
     activeMetrics.forEach(metric => {
         const currentVal = msLived / metric.ms;
-        let targets = [];
+        const targets = metric.getMilestones(currentVal);
 
-        if (metric.mode === "standard") {
-            // Rich set of mathematical properties for medium metrics
-            targets.push(
-                { val: nextRoundNumber(currentVal), label: "Clean Round Number" },
-                { val: nextPowerOf10(currentVal), label: "Power of 10" },
-                { val: nextSquare(currentVal), label: "Perfect Square" },
-                { val: nextRepdigit(currentVal), label: "Repdigit" },
-                { val: nextPalindrome(currentVal), label: "Palindrome" },
-                { val: nextFibonacci(currentVal), label: "Fibonacci Milestone" },
-                { val: nextTriangular(currentVal), label: "Triangular Number" },
-                { val: nextPowerOf2(currentVal), label: "Power of 2 (Binary)" }
-            );
-
-            const seq = nextSequential(currentVal);
-            if (seq) targets.push({ val: seq, label: "Sequential Digits" });
-
-            const nextPop = getNextStaticNumber(currentVal, POP_CULTURE_NUMS);
-            if (nextPop) targets.push({ val: nextPop, label: "Meme/Pop Culture" });
-
-            const nextConst = getNextStaticNumber(currentVal, CONSTANTS);
-            if (nextConst) targets.push({ val: nextConst, label: "Math Constant" });
-        } 
-        else if (metric.mode === "high_frequency") {
-            // Restrict high-frequency metrics (Seconds, Beats) to avoid random palindrome spam
-            targets.push(
-                { val: nextRoundNumber(currentVal), label: "Clean Round Milestone" },
-                { val: nextPowerOf10(currentVal), label: "Power of 10" },
-                { val: nextPowerOf2(currentVal), label: "Power of 2 (Binary)" },
-                { val: nextRepdigit(currentVal), label: "Major Repdigit" }
-            );
-            const nextPop = getNextStaticNumber(currentVal, POP_CULTURE_NUMS);
-            if (nextPop) targets.push({ val: nextPop, label: "Meme/Pop Culture" });
-        } 
-        else if (metric.mode === "macro") {
-            // Whole integers for planetary orbits
-            const nextInt = Math.floor(currentVal) + 1;
-            targets.push({ val: nextInt, label: "Full Orbit / Milestone" });
-        } 
-        else if (metric.mode === "macro_fractional") {
-            // Clean quarters / halves for slow outer planets
-            const nextFrac = nextCleanFraction(currentVal, 0.25);
-            targets.push({ val: nextFrac, label: "Milestone Quarter" });
-        }
-
-        // Convert targets to timestamps
         targets.forEach(t => {
-            if (!t.val || isNaN(t.val)) return;
-            
             const targetTimestamp = birthDate + (t.val * metric.ms);
             
-            // Filter: Must be in the future AND within human lifespan (115 yrs)
-            if (targetTimestamp > now && targetTimestamp <= maxLifespanMs) {
+            if (targetTimestamp > now) {
                 let formattedVal = Number.isInteger(t.val) ? t.val.toLocaleString() : t.val.toFixed(2);
                 upcomingHolidays.push({
                     metricName: metric.name,
                     targetVal: t.val,
                     label: t.label,
-                    description: `You will reach <b>${formattedVal}</b> ${metric.name}!`,
+                    description: `You will be exactly <b>${formattedVal}</b> ${metric.name} old!`,
                     timestamp: targetTimestamp
                 });
             }
@@ -573,14 +640,14 @@ function calculateHolidays() {
     // Sort chronologically
     upcomingHolidays.sort((a, b) => a.timestamp - b.timestamp);
 
-    // Deduplicate near-simultaneous events (within 60 seconds of each other)
+    // Deduplicate events occurring within 12 hours of each other to maintain high variety
     let deduplicated = [];
     upcomingHolidays.forEach(h => {
-        const isDuplicate = deduplicated.some(existing => 
-            Math.abs(existing.timestamp - h.timestamp) < 60000 && 
-            existing.description === h.description
+        const isTooClose = deduplicated.some(existing => 
+            Math.abs(existing.timestamp - h.timestamp) < (12 * msPerHour) &&
+            existing.metricName === h.metricName
         );
-        if (!isDuplicate) deduplicated.push(h);
+        if (!isTooClose) deduplicated.push(h);
     });
 
     renderHolidays(deduplicated.slice(0, maxResults), now);
@@ -594,7 +661,7 @@ function renderHolidays(holidays, now) {
     countSpan.textContent = `Showing top ${holidays.length} upcoming events`;
 
     if (holidays.length === 0) {
-        list.innerHTML = `<li class="holiday-item"><div class="holiday-info">No upcoming holidays found within a human lifespan for selected categories.</div></li>`;
+        list.innerHTML = `<li class="holiday-item"><div class="holiday-info">No upcoming holidays found for selected categories.</div></li>`;
         document.getElementById('results').style.display = 'block';
         return;
     }
