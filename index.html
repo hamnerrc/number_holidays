@@ -3,33 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cool Age Holidays Engine</title>
+    <title>Cool Age Holidays | The Lifetime Math Engine</title>
     <style>
         :root {
-            --bg: #0f1117;
-            --surface: #1a1d26;
-            --surface-hover: #232734;
-            --text: #f0f2f8;
-            --subtext: #94a3b8;
-            --accent: #00ffcc;
-            --accent-dim: rgba(0, 255, 204, 0.15);
-            --border: #2e3444;
+            --bg: #0b0c10;
+            --surface: #1f2833;
+            --surface-hover: #2b3644;
+            --text: #c5c6c7;
+            --text-bright: #ffffff;
+            --accent: #66fcf1;
+            --accent-dim: #45a29e;
+            --border: #2c363f;
+            
+            /* Math Badges */
+            --badge-tri: #b829ea;
+            --badge-sq: #29ea46;
+            --badge-fib: #eac529;
+            --badge-pal: #29b8ea;
+            --badge-pwr2: #ea6d29;
+            --badge-round: #ea2950;
+            --badge-rep: #29ead8;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg);
             color: var(--text);
-            max-width: 900px;
+            max-width: 950px;
             margin: 0 auto;
             padding: 2rem 1rem;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         header {
@@ -39,23 +44,39 @@
 
         h1 {
             color: var(--accent);
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             margin-bottom: 0.5rem;
-            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         p.subtitle {
-            color: var(--subtext);
-            font-size: 1rem;
+            color: var(--text-bright);
+            font-size: 1.1rem;
+        }
+
+        .stats-box {
+            background: linear-gradient(135deg, rgba(102, 252, 241, 0.1), rgba(69, 162, 158, 0.05));
+            border: 1px solid var(--accent-dim);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: bold;
+            color: var(--text-bright);
+        }
+
+        .stats-number {
+            color: var(--accent);
+            font-size: 1.5rem;
         }
 
         .card {
             background: var(--surface);
-            border: 1px solid var(--border);
             border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
         }
 
         .form-row {
@@ -67,27 +88,27 @@
 
         .form-group {
             flex: 1;
-            min-width: 220px;
+            min-width: 250px;
         }
 
         label {
             display: block;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 0.5rem;
-            color: var(--text);
-            font-size: 0.9rem;
+            color: var(--text-bright);
+            font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         input[type="datetime-local"], select {
             width: 100%;
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
+            padding: 0.8rem 1rem;
+            font-size: 1.05rem;
             border-radius: 6px;
             border: 1px solid var(--border);
-            background: #111319;
-            color: var(--text);
+            background: #151a22;
+            color: var(--text-bright);
             outline: none;
             transition: border-color 0.2s;
         }
@@ -98,7 +119,7 @@
 
         .categories-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 0.8rem;
             margin-top: 0.5rem;
         }
@@ -107,135 +128,116 @@
             display: flex;
             align-items: center;
             gap: 0.6rem;
-            background: #111319;
+            background: #151a22;
             padding: 0.6rem 0.8rem;
             border-radius: 6px;
             border: 1px solid var(--border);
             cursor: pointer;
             font-size: 0.9rem;
-            text-transform: none;
-            letter-spacing: normal;
-            font-weight: normal;
             transition: background 0.2s;
         }
 
-        .checkbox-label:hover {
-            background: var(--surface-hover);
-        }
+        .checkbox-label:hover { background: var(--surface-hover); }
 
         .checkbox-label input[type="checkbox"] {
             accent-color: var(--accent);
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             cursor: pointer;
-        }
-
-        .filter-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.8rem;
-        }
-
-        .btn-text {
-            background: none;
-            border: none;
-            color: var(--accent);
-            cursor: pointer;
-            font-size: 0.85rem;
-            text-decoration: underline;
-            padding: 0;
         }
 
         .btn-primary {
             width: 100%;
-            padding: 0.9rem;
-            font-size: 1.1rem;
-            font-weight: 700;
+            padding: 1rem;
+            font-size: 1.2rem;
+            font-weight: 800;
             border-radius: 6px;
             background: var(--accent);
-            color: #000;
+            color: #0b0c10;
             border: none;
             cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             transition: transform 0.1s, background-color 0.2s;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
 
-        .btn-primary:hover {
-            background: #00ddb0;
-        }
+        .btn-primary:hover { background: #85fdf5; }
+        .btn-primary:active { transform: scale(0.98); }
 
-        .btn-primary:active {
-            transform: scale(0.99);
-        }
-
-        .results-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .holiday-list {
-            list-style: none;
-        }
+        .holiday-list { list-style: none; }
 
         .holiday-item {
             background: var(--surface);
-            border: 1px solid var(--border);
-            margin-bottom: 0.8rem;
-            padding: 1rem 1.25rem;
-            border-left: 5px solid var(--accent);
-            border-radius: 0 8px 8px 0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            padding: 1.25rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 1rem;
-            transition: transform 0.15s ease, border-color 0.15s ease;
+            border-left: 4px solid var(--border);
+            transition: transform 0.15s ease;
         }
 
         .holiday-item:hover {
-            transform: translateX(4px);
-            border-color: var(--accent);
+            transform: translateX(5px);
+            background: var(--surface-hover);
         }
 
-        .holiday-info {
-            flex: 1;
-        }
+        .holiday-info { flex: 1; }
 
         .holiday-title {
-            font-size: 1.05rem;
-            font-weight: 600;
-            margin-bottom: 0.2rem;
+            font-size: 1.15rem;
+            color: var(--text-bright);
+            margin-bottom: 0.4rem;
+        }
+
+        .holiday-title b { color: var(--accent); }
+
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .holiday-tag {
-            display: inline-block;
-            font-size: 0.75rem;
-            background: var(--accent-dim);
-            color: var(--accent);
-            padding: 0.15rem 0.5rem;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
             border-radius: 4px;
-            font-weight: 600;
-            margin-top: 0.3rem;
+            font-weight: 800;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #0b0c10;
         }
 
         .holiday-date-box {
             text-align: right;
-            min-width: 160px;
+            min-width: 180px;
         }
 
         .holiday-date {
-            color: var(--accent);
+            color: var(--text-bright);
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.05rem;
         }
 
         .holiday-relative {
             font-size: 0.85rem;
-            color: var(--subtext);
+            color: var(--accent-dim);
+            margin-top: 0.2rem;
         }
+
+        /* Math Property Colors */
+        .tag-triangular { background: var(--badge-tri); }
+        .tag-square { background: var(--badge-sq); }
+        .tag-cube { background: var(--badge-cube, var(--badge-sq)); }
+        .tag-fibonacci { background: var(--badge-fib); }
+        .tag-palindrome { background: var(--badge-pal); }
+        .tag-power2 { background: var(--badge-pwr2); color: white;}
+        .tag-round { background: var(--badge-round); color: white; }
+        .tag-repdigit { background: var(--badge-rep); }
+        .tag-constant { background: #fff; }
 
         @media (max-width: 600px) {
             .holiday-item {
@@ -253,8 +255,13 @@
 
     <header>
         <h1>Cool Age Holidays</h1>
-        <p class="subtitle">Dense, meaningful age milestones calculated for your lifetime</p>
+        <p class="subtitle">The Universal Mathematical Lifetime Engine</p>
     </header>
+
+    <div class="stats-box" id="stats-box" style="display: none;">
+        Mathematical Proof: You have an estimated <span class="stats-number" id="lifetime-total">0</span> pure mathematical milestones between birth and age 120.<br>
+        <span style="font-size: 0.9rem; font-weight: normal; color: var(--text);">That's roughly <span id="daily-avg" style="color: var(--accent);">0</span> mathematically perfect holidays every single day of your life.</span>
+    </div>
 
     <div class="card">
         <div class="form-row">
@@ -263,408 +270,285 @@
                 <input type="datetime-local" id="birthdate">
             </div>
             <div class="form-group">
-                <label for="max-results">Max Holidays to Show</label>
+                <label for="max-results">Upcoming Holidays to Generate</label>
                 <select id="max-results">
-                    <option value="10">10 Holidays</option>
-                    <option value="25">25 Holidays</option>
-                    <option value="50">50 Holidays</option>
-                    <option value="100" selected>100 Holidays (~6 Months)</option>
-                    <option value="200">200 Holidays (~1 Year)</option>
+                    <option value="50">Next 50</option>
+                    <option value="100">Next 100</option>
+                    <option value="250" selected>Next 250</option>
+                    <option value="500">Next 500 (Massive Density)</option>
+                    <option value="1000">Next 1,000 (Maximum Density)</option>
                 </select>
             </div>
         </div>
 
-        <div class="filter-controls">
-            <label>Active Metric Categories</label>
-            <div>
-                <button type="button" class="btn-text" onclick="toggleCategories(true)">Select All</button> | 
-                <button type="button" class="btn-text" onclick="toggleCategories(false)">Deselect All</button>
-            </div>
-        </div>
-
+        <label>Active Metrics Engine (Select What You Value)</label>
         <div class="categories-grid">
-            <label class="checkbox-label">
-                <input type="checkbox" class="cat-checkbox" value="standard" checked>
-                Standard Time (Days, Weeks, Months, Hours)
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" class="cat-checkbox" value="lunar" checked>
-                Lunar & Moons (Full Moons Lived)
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" class="cat-checkbox" value="si" checked>
-                SI Time (Kiloseconds & Megaseconds)
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" class="cat-checkbox" value="nature" checked>
-                Pets & Body (Dog/Cat Years, Sleep Cycles)
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" class="cat-checkbox" value="cosmic" checked>
-                Planetary Orbits (Mars, Venus, Mercury)
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" class="cat-checkbox" value="historical" checked>
-                Historical (Olympiads & Jubilees)
-            </label>
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="Seconds" checked> Seconds</label>
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="Minutes" checked> Minutes</label>
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="Hours" checked> Hours</label>
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="Days" checked> Days</label>
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="Weeks" checked> Weeks</label>
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="Months" checked> Months</label>
+            
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="Heartbeats" checked> Heartbeats (avg 72bpm)</label>
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="Breaths" checked> Breaths (avg 15bpm)</label>
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="SleepCycles" checked> Sleep Cycles (90m)</label>
+            
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="DogYears" checked> Dog Years</label>
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="CatYears" checked> Cat Years</label>
+            
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="MoonCycles" checked> Lunar Cycles</label>
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="MercuryYears"> Mercury Years</label>
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="MarsYears" checked> Mars Years</label>
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="JupiterYears"> Jupiter Years</label>
+            
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="Microcenturies" checked> Microcenturies</label>
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="SwatchBeats"> Swatch Beats</label>
+            <label class="checkbox-label"><input type="checkbox" class="metric-cb" value="Olympiads"> Olympiads</label>
         </div>
 
-        <button type="button" class="btn-primary" onclick="calculateHolidays()">Find My Holidays</button>
+        <button type="button" class="btn-primary" onclick="generateHolidays()">Calculate My Math Destiny</button>
     </div>
 
     <div id="results" style="display: none;">
-        <div class="results-header">
-            <h2>Upcoming Holidays</h2>
-            <span id="results-count" class="subtitle"></span>
-        </div>
+        <h2 style="color: var(--accent); margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">Your Next Upcoming Holidays</h2>
         <ul class="holiday-list" id="upcoming-list"></ul>
     </div>
 
 <script>
-// --- TIME CONSTANTS ---
+// --- CORE TIME CONSTANTS (in milliseconds) ---
 const msPerSecond = 1000;
 const msPerMinute = msPerSecond * 60;
 const msPerHour = msPerMinute * 60;
 const msPerDay = msPerHour * 24;
 const msPerWeek = msPerDay * 7;
+const msPerMonth = msPerDay * 30.4375;
 const msPerYear = msPerDay * 365.2425;
-const msPerLunarCycle = msPerDay * 29.53059; // Synodic Month
 
-// --- HELPER MATHEMATICAL DETECTORS ---
-function isRepdigit(n) {
-    if (n < 10) return false;
-    let s = Math.floor(n).toString();
-    return s.split('').every(c => c === s[0]);
-}
+const MetricsData = {
+    "Seconds": msPerSecond,
+    "Minutes": msPerMinute,
+    "Hours": msPerHour,
+    "Days": msPerDay,
+    "Weeks": msPerWeek,
+    "Months": msPerMonth,
+    "Heartbeats": msPerMinute / 72, 
+    "Breaths": msPerMinute / 15,
+    "SleepCycles": msPerMinute * 90,
+    "DogYears": msPerYear / 7,
+    "CatYears": msPerYear / 6,
+    "MoonCycles": msPerDay * 29.53059,
+    "MercuryYears": msPerDay * 87.97,
+    "MarsYears": msPerDay * 686.98,
+    "JupiterYears": msPerDay * 4332.59,
+    "Microcenturies": msPerMinute * 52.596,
+    "SwatchBeats": msPerDay / 1000,
+    "Olympiads": msPerYear * 4
+};
 
-function isPalindrome(n) {
-    if (n < 100) return false;
-    let s = Math.floor(n).toString();
-    return s === s.split('').reverse().join('');
-}
+// --- DIRECT MATH GENERATORS O(1) ---
+// Instead of scanning every number, we mathematically generate the exact next valid integers.
 
-function isPowerOf2(n) {
-    return n > 0 && (n & (n - 1)) === 0;
-}
+function getMathMilestones(start, countPerProperty = 15) {
+    let raw = [];
+    if (start < 1) start = 1;
 
-function isFibonacci(n) {
-    if (n < 5) return false;
-    let isSquare = x => Math.sqrt(x) % 1 === 0;
-    return isSquare(5 * n * n + 4) || isSquare(5 * n * n - 4);
-}
+    // 1. Perfect Squares
+    let sqBase = Math.ceil(Math.sqrt(start));
+    for (let i = 0; i < countPerProperty; i++) raw.push({ val: Math.pow(sqBase + i, 2), tag: "PERFECT SQUARE", class: "tag-square" });
 
-// --- DENSE METRIC DEFINITIONS WITH SPECIFIC STEPPING ---
-const Metrics = [
-    // Standard Time
-    {
-        name: "Days",
-        ms: msPerDay,
-        category: "standard",
-        getMilestones: (current) => {
-            let list = [];
-            let start = Math.floor(current) + 1;
-            for (let d = start; d <= start + 400; d++) {
-                if (d % 25 === 0) list.push({ val: d, label: "25-Day Interval" });
-                else if (isRepdigit(d)) list.push({ val: d, label: "Repdigit Days" });
-                else if (isPalindrome(d)) list.push({ val: d, label: "Palindrome Days" });
-                else if (isPowerOf2(d)) list.push({ val: d, label: "Power of 2 Days" });
-                else if (isFibonacci(d)) list.push({ val: d, label: "Fibonacci Days" });
-            }
-            return list;
-        }
-    },
-    {
-        name: "Weeks",
-        ms: msPerWeek,
-        category: "standard",
-        getMilestones: (current) => {
-            let list = [];
-            let start = Math.floor(current) + 1;
-            for (let w = start; w <= start + 60; w++) {
-                if (w % 5 === 0) list.push({ val: w, label: "5-Week Interval" });
-                else if (isRepdigit(w)) list.push({ val: w, label: "Repdigit Weeks" });
-                else if (isPalindrome(w)) list.push({ val: w, label: "Palindrome Weeks" });
-            }
-            return list;
-        }
-    },
-    {
-        name: "Fortnights",
-        ms: msPerDay * 14,
-        category: "standard",
-        getMilestones: (current) => {
-            let list = [];
-            let start = Math.floor(current) + 1;
-            for (let f = start; f <= start + 30; f++) {
-                if (f % 5 === 0 || isRepdigit(f) || isPalindrome(f)) {
-                    list.push({ val: f, label: "Fortnight Milestone" });
-                }
-            }
-            return list;
-        }
-    },
-    {
-        name: "Hours",
-        ms: msPerHour,
-        category: "standard",
-        getMilestones: (current) => {
-            let list = [];
-            let start = Math.floor(current / 500) * 500 + 500;
-            for (let h = start; h <= start + 10000; h += 500) {
-                let label = (h % 5000 === 0) ? "5,000 Hour Milestone" : "500 Hour Milestone";
-                list.push({ val: h, label: label });
-            }
-            return list;
-        }
-    },
+    // 2. Perfect Cubes
+    let cbBase = Math.ceil(Math.cbrt(start));
+    for (let i = 0; i < countPerProperty; i++) raw.push({ val: Math.pow(cbBase + i, 3), tag: "PERFECT CUBE", class: "tag-cube" });
 
-    // Lunar & Moons
-    {
-        name: "Full Moons Lived",
-        ms: msPerLunarCycle,
-        category: "lunar",
-        getMilestones: (current) => {
-            let list = [];
-            let start = Math.floor(current) + 1;
-            for (let m = start; m <= start + 20; m++) {
-                let label = (m % 10 === 0) ? "Decade Moon Milestone" : "Lunar Cycle";
-                list.push({ val: m, label: label });
-            }
-            return list;
-        }
-    },
+    // 3. Triangular Numbers ( n(n+1)/2 )
+    let triBase = Math.ceil((-1 + Math.sqrt(1 + 8 * start)) / 2);
+    for (let i = 0; i < countPerProperty; i++) {
+        let n = triBase + i;
+        raw.push({ val: (n * (n + 1)) / 2, tag: "TRIANGULAR NUMBER", class: "tag-triangular" });
+    }
 
-    // SI Units
-    {
-        name: "Kiloseconds (ks)",
-        ms: msPerSecond * 1000,
-        category: "si",
-        getMilestones: (current) => {
-            let list = [];
-            let start = Math.floor(current / 2500) * 2500 + 2500;
-            for (let ks = start; ks <= start + 50000; ks += 2500) {
-                let label = (ks % 10000 === 0) ? "10,000 ks Milestone" : "2,500 ks Interval";
-                list.push({ val: ks, label: label });
-            }
-            return list;
-        }
-    },
-    {
-        name: "Megaseconds (Ms)",
-        ms: msPerSecond * 1000000,
-        category: "si",
-        getMilestones: (current) => {
-            let list = [];
-            let start = Math.floor(current / 5) * 5 + 5;
-            for (let ms = start; ms <= start + 100; ms += 5) {
-                let label = (ms % 25 === 0) ? "25 Ms Milestone" : "5 Ms Step";
-                list.push({ val: ms, label: label });
-            }
-            return list;
-        }
-    },
+    // 4. Powers of 2
+    let p2Base = Math.max(1, Math.ceil(Math.log2(start)));
+    for (let i = 0; i < countPerProperty; i++) raw.push({ val: Math.pow(2, p2Base + i), tag: "POWER OF 2", class: "tag-power2" });
 
-    // Bio & Pets
-    {
-        name: "Dog Years",
-        ms: msPerYear / 7,
-        category: "nature",
-        getMilestones: (current) => {
-            let list = [];
-            let start = Math.floor(current * 4) + 1;
-            for (let q = start; q <= start + 30; q++) {
-                let val = q / 4;
-                if (val % 1 === 0 || val % 0.5 === 0) {
-                    list.push({ val: val, label: "Dog Year Milestone" });
-                }
-            }
-            return list;
-        }
-    },
-    {
-        name: "Cat Years",
-        ms: msPerYear / 6,
-        category: "nature",
-        getMilestones: (current) => {
-            let list = [];
-            let start = Math.floor(current * 2) + 1;
-            for (let h = start; h <= start + 20; h++) {
-                let val = h / 2;
-                list.push({ val: val, label: "Cat Year Milestone" });
-            }
-            return list;
-        }
-    },
-    {
-        name: "Sleep Cycles (~90m)",
-        ms: msPerMinute * 90,
-        category: "nature",
-        getMilestones: (current) => {
-            let list = [];
-            let start = Math.floor(current / 250) * 250 + 250;
-            for (let sc = start; sc <= start + 3000; sc += 250) {
-                list.push({ val: sc, label: "250 Sleep Cycles" });
-            }
-            return list;
-        }
-    },
-
-    // Cosmic & Planetary
-    {
-        name: "Mars Years",
-        ms: msPerDay * 686.98,
-        category: "cosmic",
-        getMilestones: (current) => {
-            let list = [];
-            let start = Math.floor(current * 10) + 1;
-            for (let step = start; step <= start + 20; step++) {
-                let val = step / 10; // Every 0.1 Mars Years
-                list.push({ val: val, label: "Mars Orbit Step" });
-            }
-            return list;
-        }
-    },
-    {
-        name: "Venus Years",
-        ms: msPerDay * 224.7,
-        category: "cosmic",
-        getMilestones: (current) => {
-            let list = [];
-            let start = Math.floor(current * 4) + 1;
-            for (let step = start; step <= start + 20; step++) {
-                let val = step / 4; // Every 0.25 Venus Years
-                list.push({ val: val, label: "Venus Orbit Quarter" });
-            }
-            return list;
-        }
-    },
-    {
-        name: "Mercury Years",
-        ms: msPerDay * 87.97,
-        category: "cosmic",
-        getMilestones: (current) => {
-            let list = [];
-            let start = Math.floor(current * 2) + 1;
-            for (let step = start; step <= start + 20; step++) {
-                let val = step / 2; // Every 0.5 Mercury Years
-                list.push({ val: val, label: "Mercury Half-Orbit" });
-            }
-            return list;
-        }
-    },
-
-    // Historical & Cultural
-    {
-        name: "Olympiads (4-Yr)",
-        ms: msPerYear * 4,
-        category: "historical",
-        getMilestones: (current) => {
-            let list = [];
-            let start = Math.floor(current * 10) + 1;
-            for (let step = start; step <= start + 10; step++) {
-                let val = step / 10; // Every 0.1 Olympiads
-                list.push({ val: val, label: "Olympiad Fractional" });
-            }
-            return list;
+    // 5. Fibonacci
+    let a = 1, b = 1;
+    let fibCount = 0;
+    while (fibCount < countPerProperty && b < Number.MAX_SAFE_INTEGER) {
+        let temp = a + b; a = b; b = temp;
+        if (b >= start && b > 2) {
+            raw.push({ val: b, tag: "FIBONACCI", class: "tag-fibonacci" });
+            fibCount++;
         }
     }
-];
 
-// --- UI HELPER FUNCTIONS ---
-function toggleCategories(selectState) {
-    document.querySelectorAll('.cat-checkbox').forEach(cb => cb.checked = selectState);
+    // 6. Clean Powers of 10 and Halves
+    let sStr = start.toString();
+    let mag = Math.max(1, Math.pow(10, sStr.length - 1));
+    let rCount = 0;
+    while(rCount < countPerProperty && mag < Number.MAX_SAFE_INTEGER) {
+        for(let d = 1; d <= 9; d++) {
+            let v = d * mag;
+            if (v >= start && v >= 100) {
+                raw.push({ val: v, tag: d === 1 ? "POWER OF 10" : "CLEAN ROUND", class: "tag-round" });
+                rCount++;
+            }
+        }
+        mag *= 10;
+    }
+
+    // 7. Repdigits
+    let repCount = 0;
+    let rLen = sStr.length;
+    while (repCount < countPerProperty && rLen < 15) {
+        for(let d = 1; d <= 9; d++) {
+            let v = parseInt(d.toString().repeat(rLen));
+            if (v >= start && v > 10) {
+                raw.push({ val: v, tag: "REPDIGIT", class: "tag-repdigit" });
+                repCount++;
+            }
+        }
+        rLen++;
+    }
+
+    // 8. Palindromes (Generative approach)
+    let pCount = 0;
+    let pLen = sStr.length;
+    while(pCount < countPerProperty && pLen < 15) {
+        let halfLen = Math.ceil(pLen / 2);
+        let minH = Math.pow(10, halfLen - 1);
+        let maxH = Math.pow(10, halfLen) - 1;
+        let startH = pLen === sStr.length ? parseInt(sStr.substring(0, halfLen)) : minH;
+        
+        for (let h = startH; h <= startH + countPerProperty && h <= maxH; h++) {
+            let left = h.toString();
+            let right = left.split('').reverse().join('');
+            let pStr = pLen % 2 === 0 ? left + right : left + right.substring(1);
+            let pVal = parseInt(pStr);
+            if (pVal >= start && pVal > 100) {
+                raw.push({ val: pVal, tag: "PALINDROME", class: "tag-palindrome" });
+                pCount++;
+            }
+        }
+        pLen++;
+    }
+
+    // 9. Constants (Pi, e, Golden Ratio, Memes)
+    const constants = [
+        {v: 314, l: "PI DIGITS"}, {v: 3141, l: "PI DIGITS"}, {v: 31415, l: "PI DIGITS"}, {v: 314159, l: "PI DIGITS"},
+        {v: 1618, l: "GOLDEN RATIO"}, {v: 16180, l: "GOLDEN RATIO"}, {v: 161803, l: "GOLDEN RATIO"},
+        {v: 2718, l: "EULER'S NUMBER"}, {v: 27182, l: "EULER'S NUMBER"},
+        {v: 420, l: "MEME NUMBER"}, {v: 1337, l: "MEME NUMBER"}, {v: 42069, l: "MEME NUMBER"}
+    ];
+    constants.forEach(c => {
+        if (c.v >= start) raw.push({ val: c.v, tag: c.l, class: "tag-constant" });
+    });
+
+    // Merge duplicate values to combine tags (e.g., Square + Palindrome)
+    let map = new Map();
+    raw.forEach(item => {
+        if (!map.has(item.val)) {
+            map.set(item.val, { val: item.val, tags: [ {text: item.tag, cls: item.class} ] });
+        } else {
+            // Add tag if not already present
+            let existing = map.get(item.val);
+            if (!existing.tags.some(t => t.text === item.tag)) {
+                existing.tags.push({text: item.tag, cls: item.class});
+            }
+        }
+    });
+
+    return Array.from(map.values()).sort((a,b) => a.val - b.val);
 }
 
-function formatRelativeTime(targetMs, nowMs) {
-    const diffMs = targetMs - nowMs;
-    const diffDays = Math.floor(diffMs / msPerDay);
+// --- LIFETIME PROOF ESTIMATOR ---
+function estimateLifetimeMilestones(activeMetrics) {
+    let total = 0;
+    const lifeMs = 120 * msPerYear; 
     
-    if (diffDays === 0) return "Today!";
-    if (diffDays === 1) return "Tomorrow";
-    if (diffDays < 30) return `In ${diffDays} days`;
-    if (diffDays < 365) return `In ${(diffDays / 30).toFixed(1)} months`;
-    return `In ${(diffDays / 365.25).toFixed(1)} years`;
+    activeMetrics.forEach(metricKey => {
+        const maxValue = lifeMs / MetricsData[metricKey];
+        if (maxValue < 1) return;
+        
+        total += Math.floor(Math.sqrt(maxValue)); // Squares
+        total += Math.floor(Math.cbrt(maxValue)); // Cubes
+        total += Math.floor(Math.sqrt(maxValue * 2)); // Triangulars
+        total += Math.floor(Math.log2(maxValue)); // Pow 2
+        total += Math.floor(Math.log(maxValue) / Math.log(1.618)); // Fib
+        
+        let digits = Math.floor(Math.log10(maxValue));
+        if (digits > 0) {
+            total += 9 * digits; // Rounds
+            total += 9 * digits; // Repdigits
+            
+            // Palindromes
+            for (let i = 1; i <= digits; i++) {
+                total += 9 * Math.pow(10, Math.floor((i - 1) / 2));
+            }
+        }
+    });
+    return total;
 }
 
-// Set default datetime picker to 20 years ago
-window.addEventListener('DOMContentLoaded', () => {
-    const defaultDate = new Date();
-    defaultDate.setFullYear(defaultDate.getFullYear() - 20);
-    document.getElementById('birthdate').value = defaultDate.toISOString().slice(0, 16);
-});
-
-// --- MAIN CALCULATION ENGINE ---
-function calculateHolidays() {
+// --- MAIN ENGINE ---
+function generateHolidays() {
     const birthInput = document.getElementById('birthdate').value;
-    if (!birthInput) return alert("Please enter a birth date and time.");
+    if (!birthInput) return alert("Please enter your birth date & time.");
     
     const birthDate = new Date(birthInput).getTime();
     const now = Date.now();
     
     if (birthDate > now) return alert("Birth date must be in the past!");
 
-    const msLived = now - birthDate;
+    const activeMetrics = Array.from(document.querySelectorAll('.metric-cb:checked')).map(cb => cb.value);
+    if (activeMetrics.length === 0) return alert("Select at least one metric.");
+
     const maxResults = parseInt(document.getElementById('max-results').value);
+    const msLived = now - birthDate;
 
-    const activeCategories = new Set(
-        Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value)
-    );
+    // 1. Prove the density mathematically for the stats box
+    const lifetimeCount = estimateLifetimeMilestones(activeMetrics);
+    const dailyAvg = (lifetimeCount / (120 * 365.25)).toFixed(1);
+    
+    document.getElementById('lifetime-total').textContent = lifetimeCount.toLocaleString();
+    document.getElementById('daily-avg').textContent = dailyAvg;
+    document.getElementById('stats-box').style.display = 'block';
 
-    if (activeCategories.size === 0) {
-        return alert("Please select at least one metric category.");
-    }
+    // 2. Generate future milestones
+    let allEvents = [];
 
-    let upcomingHolidays = [];
-    const activeMetrics = Metrics.filter(m => activeCategories.has(m.category));
-
-    activeMetrics.forEach(metric => {
-        const currentVal = msLived / metric.ms;
-        const targets = metric.getMilestones(currentVal);
-
-        targets.forEach(t => {
-            const targetTimestamp = birthDate + (t.val * metric.ms);
-            
-            if (targetTimestamp > now) {
-                let formattedVal = Number.isInteger(t.val) ? t.val.toLocaleString() : t.val.toFixed(2);
-                upcomingHolidays.push({
-                    metricName: metric.name,
-                    targetVal: t.val,
-                    label: t.label,
-                    description: `You will be exactly <b>${formattedVal}</b> ${metric.name} old!`,
-                    timestamp: targetTimestamp
+    activeMetrics.forEach(metricKey => {
+        const msPerUnit = MetricsData[metricKey];
+        const currentValue = msLived / msPerUnit;
+        const startInt = Math.floor(currentValue) + 1;
+        
+        // Get next 50 guaranteed math milestones for this specific metric
+        const milestones = getMathMilestones(startInt, 50);
+        
+        milestones.forEach(m => {
+            const eventTimestamp = birthDate + (m.val * msPerUnit);
+            if (eventTimestamp > now) {
+                allEvents.push({
+                    metricName: metricKey.replace(/([A-Z])/g, ' $1').trim(), // CamelCase to space
+                    val: m.val,
+                    tags: m.tags,
+                    timestamp: eventTimestamp
                 });
             }
         });
     });
 
-    // Sort chronologically
-    upcomingHolidays.sort((a, b) => a.timestamp - b.timestamp);
+    // 3. Sort chronologically and take top results
+    allEvents.sort((a, b) => a.timestamp - b.timestamp);
+    const topEvents = allEvents.slice(0, maxResults);
 
-    // Deduplicate events occurring within 12 hours of each other to maintain high variety
-    let deduplicated = [];
-    upcomingHolidays.forEach(h => {
-        const isTooClose = deduplicated.some(existing => 
-            Math.abs(existing.timestamp - h.timestamp) < (12 * msPerHour) &&
-            existing.metricName === h.metricName
-        );
-        if (!isTooClose) deduplicated.push(h);
-    });
-
-    renderHolidays(deduplicated.slice(0, maxResults), now);
+    renderHolidays(topEvents, now);
 }
 
 function renderHolidays(holidays, now) {
     const list = document.getElementById('upcoming-list');
-    const countSpan = document.getElementById('results-count');
     list.innerHTML = "";
-    
-    countSpan.textContent = `Showing top ${holidays.length} upcoming events`;
-
-    if (holidays.length === 0) {
-        list.innerHTML = `<li class="holiday-item"><div class="holiday-info">No upcoming holidays found for selected categories.</div></li>`;
-        document.getElementById('results').style.display = 'block';
-        return;
-    }
 
     holidays.forEach(h => {
         const li = document.createElement('li');
@@ -675,12 +559,18 @@ function renderHolidays(holidays, now) {
             weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' 
         });
         const timeStr = eventDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const relativeStr = formatRelativeTime(h.timestamp, now);
+        
+        const diffDays = Math.floor((h.timestamp - now) / msPerDay);
+        let relativeStr = "Today!";
+        if (diffDays === 1) relativeStr = "Tomorrow";
+        else if (diffDays > 1) relativeStr = `In ${diffDays} days`;
+
+        const tagsHtml = h.tags.map(t => `<span class="holiday-tag ${t.cls}">${t.text}</span>`).join('');
 
         li.innerHTML = `
             <div class="holiday-info">
-                <div class="holiday-title">${h.description}</div>
-                <span class="holiday-tag">${h.label}</span>
+                <div class="holiday-title">You will reach <b>${h.val.toLocaleString()}</b> ${h.metricName}!</div>
+                <div class="tags-container">${tagsHtml}</div>
             </div>
             <div class="holiday-date-box">
                 <div class="holiday-date">${dateStr}</div>
@@ -692,6 +582,13 @@ function renderHolidays(holidays, now) {
     
     document.getElementById('results').style.display = 'block';
 }
+
+// Set default birthdate
+window.addEventListener('DOMContentLoaded', () => {
+    const d = new Date();
+    d.setFullYear(d.getFullYear() - 25); // Default to 25 years old
+    document.getElementById('birthdate').value = d.toISOString().slice(0, 16);
+});
 </script>
 
 </body>
