@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cool Age Holidays</title>
+    <style>
+        :root {
+            --bg: #111;
+            --surface: #222;
+            --text: #eee;
+            --accent: #00ffcc;
+            --subtext: #aaa;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        h1 { color: var(--accent); }
+        .card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        input, button {
+            padding: 0.8rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            border: 1px solid #444;
+            background: #333;
+            color: white;
+            margin-bottom: 1rem;
+        }
+        button {
+            background: var(--accent);
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover { background: #00ddb0; }
+        .holiday-list {
+            list-style: none;
+            padding: 0;
+        }
+        .holiday-item {
+            background: #2a2a2a;
+            margin-bottom: 0.8rem;
+            padding: 1rem;
+            border-left: 4px solid var(--accent);
+            border-radius: 0 4px 4px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .holiday-date {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .holiday-desc { font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+
+    <h1>Cool Age Holidays</h1>
+    <div class="card">
+        <label for="birthdate">Enter your birth date and time:</label><br><br>
+        <input type="datetime-local" id="birthdate">
+        <button onclick="calculateHolidays()">Find My Holidays</button>
+    </div>
+
+    <div id="results" style="display: none;">
+        <h2>Upcoming Holidays</h2>
+        <ul class="holiday-list" id="upcoming-list"></ul>
+    </div>
+
+<script>
+// --- 1. STATIC LOOKUP DATA ---
+const POP_CULTURE_NUMS = new Set([42, 69, 420, 666, 777, 1337, 80085, 8675309]);
+const CONSTANTS = new Set([314, 3141, 31415, 314159, 2718, 27182, 271828, 1618, 161803]);
+
+// --- 2. DYNAMIC TESTERS ---
+function isPalindrome(num) {
+    const s = num.toString();
+    return s === s.split('').reverse().join('');
+}
+
+function isRepdigit(num) {
+    return new Set(num.toString().split('')).size === 1;
+}
+
+// --- 3. TARGET PROJECTORS (The Hybrid Engine) ---
+// These calculate the NEXT upcoming target for massive integers without looping infinitely
+
+function nextPowerOf10(num) {
+    return Math.pow(10, Math.ceil(Math.log10(num + 1)));
+}
+
+function nextSquare(num) {
+    return Math.pow(Math.floor(Math.sqrt(num)) + 1, 2);
+}
+
+function nextRepdigit(num) {
+    let n = Math.floor(num) + 1;
+    let s = n.toString();
+    let firstDigit = parseInt(s[0]);
+    let candidate = parseInt(firstDigit.toString().repeat(s.length));
+    
+    if (candidate >= n) return candidate;
+    
+    firstDigit++;
+    if (firstDigit > 9) return parseInt("1".repeat(s.length + 1));
+    return parseInt(firstDigit.toString().repeat(s.length));
+}
+
+function nextPalindrome(num) {
+    const s = (Math.floor(num) + 1).toString();
+    const len = s.length;
+    const leftHalf = s.slice(0, Math.ceil(len / 2));
+    const isOdd = len % 2 !== 0;
+    
+    const makePal = (left) => parseInt(isOdd ? left + left.split('').reverse().join('').slice(1) : left + left.split('').reverse().join(''));
+    
+    let candidate = makePal(leftHalf);
+    if (candidate > num) return candidate;
+    
+    const nextLeft = (parseInt(leftHalf) + 1).toString();
+    return makePal(nextLeft);
+}
+
+function getNextStaticNumber(currentVal, numberSet) {
+    const sorted = Array.from(numberSet).sort((a,b) => a - b);
+    return sorted.find(n => n > currentVal) || null;
+}
+
+// --- 4. METRIC DEFINITIONS (Milliseconds per unit) ---
+const msPerSecond = 1000;
+const msPerMinute = msPerSecond * 60;
+const msPerHour = msPerMinute * 60;
+const msPerDay = msPerHour * 24;
+const msPerWeek = msPerDay * 7;
+const msPerFortnight = msPerDay * 14;
+const msPerMarsYear = msPerDay * 687;
+const msPerGalacticOrbit = msPerDay * 365.25 * 230000000; // ~230M Earth years
+
+const Metrics = [
+    { name: "Seconds", ms: msPerSecond, type: "micro" },
+    { name: "Hours", ms: msPerHour, type: "micro" },
+    { name: "Days", ms: msPerDay, type: "micro" },
+    { name: "Weeks", ms: msPerWeek, type: "micro" },
+    { name: "Fortnights", ms: msPerFortnight, type: "micro" },
+    { name: "Mars Years", ms: msPerMarsYear, type: "macro" }
+];
+
+// --- 5. THE MAIN ENGINE ---
+function calculateHolidays() {
+    const birthInput = document.getElementById('birthdate').value;
+    if (!birthInput) return alert("Please enter a birthdate.");
+    
+    const birthDate = new Date(birthInput).getTime();
+    const now = Date.now();
+    const msLived = now - birthDate;
+    
+    let upcomingHolidays = [];
+
+    Metrics.forEach(metric => {
+        const currentVal = msLived / metric.ms;
+        
+        if (metric.type === "micro") {
+            // Find upcoming mathematical milestones
+            const targets = [
+                { val: nextPowerOf10(currentVal), label: "Power of 10" },
+                { val: nextSquare(currentVal), label: "Perfect Square" },
+                { val: nextRepdigit(currentVal), label: "Repdigit (Solid Number)" },
+                { val: nextPalindrome(currentVal), label: "Palindrome (Reads forwards & backwards)" }
+            ];
+
+            // Find upcoming pop culture numbers
+            const nextPopCulture = getNextStaticNumber(currentVal, POP_CULTURE_NUMS);
+            if (nextPopCulture) targets.push({ val: nextPopCulture, label: "Meme/Pop Culture Number" });
+            
+            const nextConstant = getNextStaticNumber(currentVal, CONSTANTS);
+            if (nextConstant) targets.push({ val: nextConstant, label: "Math Constant Approximation" });
+
+            // Convert targets to future dates
+            targets.forEach(t => {
+                const targetTimestamp = birthDate + (t.val * metric.ms);
+                // Only keep holidays happening in the future
+                if (targetTimestamp > now) {
+                    upcomingHolidays.push({
+                        date: new Date(targetTimestamp),
+                        description: `You will be exactly <b>${t.val.toLocaleString()}</b> ${metric.name} old! (${t.label})`,
+                        timestamp: targetTimestamp
+                    });
+                }
+            });
+        } 
+        else if (metric.type === "macro") {
+            // For macro metrics, look for the next whole integer
+            const nextInteger = Math.floor(currentVal) + 1;
+            const targetTimestamp = birthDate + (nextInteger * metric.ms);
+            
+            if (targetTimestamp > now) {
+                upcomingHolidays.push({
+                    date: new Date(targetTimestamp),
+                    description: `You will complete exactly <b>${nextInteger}</b> ${metric.name}! (Macro Milestone)`,
+                    timestamp: targetTimestamp
+                });
+            }
+        }
+    });
+
+    // Sort chronologically and display the top 15 upcoming holidays
+    upcomingHolidays.sort((a, b) => a.timestamp - b.timestamp);
+    renderHolidays(upcomingHolidays.slice(0, 15));
+}
+
+function renderHolidays(holidays) {
+    const list = document.getElementById('upcoming-list');
+    list.innerHTML = "";
+    
+    holidays.forEach(h => {
+        const li = document.createElement('li');
+        li.className = 'holiday-item';
+        
+        // Format date beautifully
+        const dateStr = h.date.toLocaleDateString(undefined, { 
+            weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' 
+        });
+        
+        li.innerHTML = `
+            <div class="holiday-desc">${h.description}</div>
+            <div class="holiday-date">${dateStr}</div>
+        `;
+        list.appendChild(li);
+    });
+    
+    document.getElementById('results').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
