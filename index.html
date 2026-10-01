@@ -3,81 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cool Age Holidays</title>
+    <title>Cool Age Holidays Engine</title>
     <style>
         :root {
-            --bg: #111;
-            --surface: #222;
-            --text: #eee;
+            --bg: #0f1117;
+            --surface: #1a1d26;
+            --surface-hover: #232734;
+            --text: #f0f2f8;
+            --subtext: #94a3b8;
             --accent: #00ffcc;
-            --subtext: #aaa;
+            --accent-dim: rgba(0, 255, 204, 0.15);
+            --border: #2e3444;
         }
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-            line-height: 1.6;
-        }
-        h1 { color: var(--accent); }
-        .card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-        }
-        input, button {
-            padding: 0.8rem;
-            font-size: 1rem;
-            border-radius: 4px;
-            border: 1px solid #444;
-            background: #333;
-            color: white;
-            margin-bottom: 1rem;
-        }
-        button {
-            background: var(--accent);
-            color: black;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-        }
-        button:hover { background: #00ddb0; }
-        .holiday-list {
-            list-style: none;
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
             padding: 0;
         }
-        .holiday-item {
-            background: #2a2a2a;
-            margin-bottom: 0.8rem;
-            padding: 1rem;
-            border-left: 4px solid var(--accent);
-            border-radius: 0 4px 4px 0;
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            line-height: 1.5;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--accent);
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        p.subtitle {
+            color: var(--subtext);
+            font-size: 1rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="datetime-local"], select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: #111319;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="datetime-local"]:focus, select:focus {
+            border-color: var(--accent);
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: #111319;
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: normal;
+            transition: background 0.2s;
+        }
+
+        .checkbox-label:hover {
+            background: var(--surface-hover);
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            accent-color: var(--accent);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .filter-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 0.8rem;
         }
+
+        .btn-text {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 0.85rem;
+            text-decoration: underline;
+            padding: 0;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 0.9rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 6px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: #00ddb0;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.99);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .holiday-list {
+            list-style: none;
+        }
+
+        .holiday-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            margin-bottom: 0.8rem;
+            padding: 1rem 1.25rem;
+            border-left: 5px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        .holiday-item:hover {
+            transform: translateX(4px);
+            border-color: var(--accent);
+        }
+
+        .holiday-info {
+            flex: 1;
+        }
+
+        .holiday-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .holiday-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            background: var(--accent-dim);
+            color: var(--accent);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-top: 0.3rem;
+            text-transform: uppercase;
+        }
+
+        .holiday-date-box {
+            text-align: right;
+            min-width: 150px;
+        }
+
         .holiday-date {
             color: var(--accent);
-            font-weight: bold;
-            font-size: 1.1rem;
+            font-weight: 700;
+            font-size: 1rem;
         }
-        .holiday-desc { font-size: 0.95rem; }
+
+        .holiday-relative {
+            font-size: 0.85rem;
+            color: var(--subtext);
+        }
+
+        @media (max-width: 600px) {
+            .holiday-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .holiday-date-box {
+                text-align: left;
+                margin-top: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <h1>Cool Age Holidays</h1>
+    <header>
+        <h1>Cool Age Holidays</h1>
+        <p class="subtitle">Calculate upcoming mathematical & cosmic milestones in your lifetime</p>
+    </header>
+
     <div class="card">
-        <label for="birthdate">Enter your birth date and time:</label><br><br>
-        <input type="datetime-local" id="birthdate">
-        <button onclick="calculateHolidays()">Find My Holidays</button>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="birthdate">Birth Date & Time</label>
+                <input type="datetime-local" id="birthdate">
+            </div>
+            <div class="form-group">
+                <label for="max-results">Max Holidays to Show</label>
+                <select id="max-results">
+                    <option value="10">10 Holidays</option>
+                    <option value="25" selected>25 Holidays</option>
+                    <option value="50">50 Holidays</option>
+                    <option value="100">100 Holidays</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-controls">
+            <label>Active Metric Categories</label>
+            <div>
+                <button type="button" class="btn-text" onclick="toggleCategories(true)">Select All</button> | 
+                <button type="button" class="btn-text" onclick="toggleCategories(false)">Deselect All</button>
+            </div>
+        </div>
+
+        <div class="categories-grid">
+            <label class="checkbox-label">
+                <input type="checkbox" class="cat-checkbox" value="standard" checked>
+                Standard Time (Seconds, Hours, Days)
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" class="cat-checkbox" value="si" checked>
+                SI Prefixes (Kilo-, Mega-, Gigaseconds)
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" class="cat-checkbox" value="tech" checked>
+                Nerd & Tech (Microcenturies, Beats)
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" class="cat-checkbox" value="nature" checked>
+                Nature & Bio (Dog Years, Mayfly Lives)
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" class="cat-checkbox" value="cosmic" checked>
+                Cosmic (Mars Years, Halley's Comet)
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" class="cat-checkbox" value="historical" checked>
+                Historical (Olympiads, Scores, Jubilees)
+            </label>
+        </div>
+
+        <button type="button" class="btn-primary" onclick="calculateHolidays()">Find My Holidays</button>
     </div>
 
     <div id="results" style="display: none;">
-        <h2>Upcoming Holidays</h2>
+        <div class="results-header">
+            <h2>Upcoming Holidays</h2>
+            <span id="results-count" class="subtitle"></span>
+        </div>
         <ul class="holiday-list" id="upcoming-list"></ul>
     </div>
 
@@ -86,19 +324,7 @@
 const POP_CULTURE_NUMS = new Set([42, 69, 420, 666, 777, 1337, 80085, 8675309]);
 const CONSTANTS = new Set([314, 3141, 31415, 314159, 2718, 27182, 271828, 1618, 161803]);
 
-// --- 2. DYNAMIC TESTERS ---
-function isPalindrome(num) {
-    const s = num.toString();
-    return s === s.split('').reverse().join('');
-}
-
-function isRepdigit(num) {
-    return new Set(num.toString().split('')).size === 1;
-}
-
-// --- 3. TARGET PROJECTORS (The Hybrid Engine) ---
-// These calculate the NEXT upcoming target for massive integers without looping infinitely
-
+// --- 2. DYNAMIC MATH TESTERS ---
 function nextPowerOf10(num) {
     return Math.pow(10, Math.ceil(Math.log10(num + 1)));
 }
@@ -114,7 +340,6 @@ function nextRepdigit(num) {
     let candidate = parseInt(firstDigit.toString().repeat(s.length));
     
     if (candidate >= n) return candidate;
-    
     firstDigit++;
     if (firstDigit > 9) return parseInt("1".repeat(s.length + 1));
     return parseInt(firstDigit.toString().repeat(s.length));
@@ -136,108 +361,192 @@ function nextPalindrome(num) {
 }
 
 function getNextStaticNumber(currentVal, numberSet) {
-    const sorted = Array.from(numberSet).sort((a,b) => a - b);
+    const sorted = Array.from(numberSet).sort((a, b) => a - b);
     return sorted.find(n => n > currentVal) || null;
 }
 
-// --- 4. METRIC DEFINITIONS (Milliseconds per unit) ---
+// --- 3. METRIC DEFINITIONS (Milliseconds per unit) ---
 const msPerSecond = 1000;
 const msPerMinute = msPerSecond * 60;
 const msPerHour = msPerMinute * 60;
 const msPerDay = msPerHour * 24;
-const msPerWeek = msPerDay * 7;
-const msPerFortnight = msPerDay * 14;
-const msPerMarsYear = msPerDay * 687;
-const msPerGalacticOrbit = msPerDay * 365.25 * 230000000; // ~230M Earth years
+const msPerYear = msPerDay * 365.2425;
 
 const Metrics = [
-    { name: "Seconds", ms: msPerSecond, type: "micro" },
-    { name: "Hours", ms: msPerHour, type: "micro" },
-    { name: "Days", ms: msPerDay, type: "micro" },
-    { name: "Weeks", ms: msPerWeek, type: "micro" },
-    { name: "Fortnights", ms: msPerFortnight, type: "micro" },
-    { name: "Mars Years", ms: msPerMarsYear, type: "macro" }
+    // Standard Time
+    { name: "Seconds", ms: msPerSecond, type: "micro", category: "standard" },
+    { name: "Hours", ms: msPerHour, type: "micro", category: "standard" },
+    { name: "Days", ms: msPerDay, type: "micro", category: "standard" },
+    { name: "Weeks", ms: msPerDay * 7, type: "micro", category: "standard" },
+    { name: "Fortnights", ms: msPerDay * 14, type: "micro", category: "standard" },
+
+    // SI Prefixes
+    { name: "Kiloseconds (ks)", ms: msPerSecond * 1000, type: "micro", category: "si" },
+    { name: "Megaseconds (Ms)", ms: msPerSecond * 1000000, type: "micro", category: "si" },
+    { name: "Gigaseconds (Gs)", ms: msPerSecond * 1000000000, type: "macro", category: "si" },
+
+    // Nerd & Tech
+    { name: "Microcenturies", ms: (100 * msPerYear) / 1000000, type: "micro", category: "tech" }, // ~52.59 min
+    { name: "Nanocenturies", ms: (100 * msPerYear) / 1000000000, type: "micro", category: "tech" }, // ~3.155 sec
+    { name: "Swatch Internet Beats", ms: 86400, type: "micro", category: "tech" }, // 1 beat = 86.4s
+
+    // Nature & Biological
+    { name: "Dog Years", ms: msPerYear / 7, type: "micro", category: "nature" },
+    { name: "Mayfly Lifetimes", ms: msPerDay, type: "micro", category: "nature" }, // 1 day per lifespan
+    { name: "Cicada Brood Cycles (17-Yr)", ms: msPerYear * 17, type: "macro", category: "nature" },
+
+    // Cosmic & Planetary
+    { name: "Mars Years", ms: msPerDay * 687, type: "macro", category: "cosmic" },
+    { name: "Halley's Comet Orbits", ms: msPerYear * 75.32, type: "macro", category: "cosmic" },
+    { name: "Galactic Ticks (1/1000th orbit)", ms: msPerYear * 230, type: "macro", category: "cosmic" },
+    { name: "Light-Minutes Lived", ms: msPerMinute, type: "micro", category: "cosmic" },
+
+    // Historical & Cultural
+    { name: "Olympiads (4-Yr)", ms: msPerYear * 4, type: "macro", category: "historical" },
+    { name: "Scores (20-Yr)", ms: msPerYear * 20, type: "macro", category: "historical" },
+    { name: "Jubilees (50-Yr)", ms: msPerYear * 50, type: "macro", category: "historical" }
 ];
 
-// --- 5. THE MAIN ENGINE ---
+// --- 4. UI HELPER FUNCTIONS ---
+function toggleCategories(selectState) {
+    document.querySelectorAll('.cat-checkbox').forEach(cb => cb.checked = selectState);
+}
+
+function formatRelativeTime(targetMs, nowMs) {
+    const diffMs = targetMs - nowMs;
+    const diffDays = Math.floor(diffMs / msPerDay);
+    
+    if (diffDays === 0) return "Today!";
+    if (diffDays === 1) return "Tomorrow";
+    if (diffDays < 30) return `In ${diffDays} days`;
+    if (diffDays < 365) return `In ${Math.floor(diffDays / 30)} months`;
+    return `In ${(diffDays / 365.25).toFixed(1)} years`;
+}
+
+// Set default datetime picker to 20 years ago for easy testing
+window.addEventListener('DOMContentLoaded', () => {
+    const defaultDate = new Date();
+    defaultDate.setFullYear(defaultDate.getFullYear() - 20);
+    document.getElementById('birthdate').value = defaultDate.toISOString().slice(0, 16);
+});
+
+// --- 5. MAIN ENGINE ---
 function calculateHolidays() {
     const birthInput = document.getElementById('birthdate').value;
-    if (!birthInput) return alert("Please enter a birthdate.");
+    if (!birthInput) return alert("Please enter a birth date and time.");
     
     const birthDate = new Date(birthInput).getTime();
     const now = Date.now();
-    const msLived = now - birthDate;
     
+    if (birthDate > now) {
+        return alert("Birth date must be in the past!");
+    }
+
+    const msLived = now - birthDate;
+    const maxResults = parseInt(document.getElementById('max-results').value);
+    
+    // Get checked categories
+    const activeCategories = new Set(
+        Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value)
+    );
+
+    if (activeCategories.size === 0) {
+        return alert("Please select at least one metric category.");
+    }
+
     let upcomingHolidays = [];
 
-    Metrics.forEach(metric => {
+    // Filter metrics by active categories
+    const activeMetrics = Metrics.filter(m => activeCategories.has(m.category));
+
+    activeMetrics.forEach(metric => {
         const currentVal = msLived / metric.ms;
         
         if (metric.type === "micro") {
-            // Find upcoming mathematical milestones
             const targets = [
                 { val: nextPowerOf10(currentVal), label: "Power of 10" },
                 { val: nextSquare(currentVal), label: "Perfect Square" },
-                { val: nextRepdigit(currentVal), label: "Repdigit (Solid Number)" },
-                { val: nextPalindrome(currentVal), label: "Palindrome (Reads forwards & backwards)" }
+                { val: nextRepdigit(currentVal), label: "Repdigit" },
+                { val: nextPalindrome(currentVal), label: "Palindrome" }
             ];
 
-            // Find upcoming pop culture numbers
             const nextPopCulture = getNextStaticNumber(currentVal, POP_CULTURE_NUMS);
-            if (nextPopCulture) targets.push({ val: nextPopCulture, label: "Meme/Pop Culture Number" });
+            if (nextPopCulture) targets.push({ val: nextPopCulture, label: "Meme/Pop Culture" });
             
             const nextConstant = getNextStaticNumber(currentVal, CONSTANTS);
-            if (nextConstant) targets.push({ val: nextConstant, label: "Math Constant Approximation" });
+            if (nextConstant) targets.push({ val: nextConstant, label: "Math Constant" });
 
-            // Convert targets to future dates
             targets.forEach(t => {
                 const targetTimestamp = birthDate + (t.val * metric.ms);
-                // Only keep holidays happening in the future
                 if (targetTimestamp > now) {
                     upcomingHolidays.push({
-                        date: new Date(targetTimestamp),
-                        description: `You will be exactly <b>${t.val.toLocaleString()}</b> ${metric.name} old! (${t.label})`,
+                        metricName: metric.name,
+                        targetVal: t.val,
+                        label: t.label,
+                        description: `You will be exactly <b>${t.val.toLocaleString()}</b> ${metric.name} old!`,
                         timestamp: targetTimestamp
                     });
                 }
             });
         } 
         else if (metric.type === "macro") {
-            // For macro metrics, look for the next whole integer
+            // For macro metrics, evaluate next whole integers
             const nextInteger = Math.floor(currentVal) + 1;
             const targetTimestamp = birthDate + (nextInteger * metric.ms);
             
             if (targetTimestamp > now) {
                 upcomingHolidays.push({
-                    date: new Date(targetTimestamp),
-                    description: `You will complete exactly <b>${nextInteger}</b> ${metric.name}! (Macro Milestone)`,
+                    metricName: metric.name,
+                    targetVal: nextInteger,
+                    label: "Macro Milestone",
+                    description: `You will reach exactly <b>${nextInteger.toLocaleString()}</b> ${metric.name}!`,
                     timestamp: targetTimestamp
                 });
             }
         }
     });
 
-    // Sort chronologically and display the top 15 upcoming holidays
+    // Sort chronologically
     upcomingHolidays.sort((a, b) => a.timestamp - b.timestamp);
-    renderHolidays(upcomingHolidays.slice(0, 15));
+
+    // Limit output to user choice
+    const slicedResults = upcomingHolidays.slice(0, maxResults);
+    renderHolidays(slicedResults, now);
 }
 
-function renderHolidays(holidays) {
+function renderHolidays(holidays, now) {
     const list = document.getElementById('upcoming-list');
+    const countSpan = document.getElementById('results-count');
     list.innerHTML = "";
     
+    countSpan.textContent = `Showing top ${holidays.length} upcoming events`;
+
+    if (holidays.length === 0) {
+        list.innerHTML = `<li class="holiday-item"><div class="holiday-info">No upcoming holidays found for selected categories.</div></li>`;
+        document.getElementById('results').style.display = 'block';
+        return;
+    }
+
     holidays.forEach(h => {
         const li = document.createElement('li');
         li.className = 'holiday-item';
         
-        // Format date beautifully
-        const dateStr = h.date.toLocaleDateString(undefined, { 
-            weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' 
+        const eventDate = new Date(h.timestamp);
+        const dateStr = eventDate.toLocaleDateString(undefined, { 
+            weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' 
         });
-        
+        const timeStr = eventDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const relativeStr = formatRelativeTime(h.timestamp, now);
+
         li.innerHTML = `
-            <div class="holiday-desc">${h.description}</div>
-            <div class="holiday-date">${dateStr}</div>
+            <div class="holiday-info">
+                <div class="holiday-title">${h.description}</div>
+                <span class="holiday-tag">${h.label}</span>
+            </div>
+            <div class="holiday-date-box">
+                <div class="holiday-date">${dateStr}</div>
+                <div class="holiday-relative">${timeStr} • ${relativeStr}</div>
+            </div>
         `;
         list.appendChild(li);
     });
