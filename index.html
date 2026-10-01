@@ -158,7 +158,7 @@
             border: none;
             cursor: pointer;
             transition: transform 0.1s, background-color 0.2s;
-            margin-top: 0.5rem;
+            margin-top: 1rem;
         }
 
         .btn-primary:hover {
@@ -223,7 +223,7 @@
 
         .holiday-date-box {
             text-align: right;
-            min-width: 150px;
+            min-width: 160px;
         }
 
         .holiday-date {
@@ -253,7 +253,7 @@
 
     <header>
         <h1>Cool Age Holidays</h1>
-        <p class="subtitle">Calculate upcoming mathematical & cosmic milestones in your lifetime</p>
+        <p class="subtitle">Discover every mathematical & cosmic milestone in your lifetime</p>
     </header>
 
     <div class="card">
@@ -269,6 +269,7 @@
                     <option value="25" selected>25 Holidays</option>
                     <option value="50">50 Holidays</option>
                     <option value="100">100 Holidays</option>
+                    <option value="200">200 Holidays</option>
                 </select>
             </div>
         </div>
@@ -284,7 +285,7 @@
         <div class="categories-grid">
             <label class="checkbox-label">
                 <input type="checkbox" class="cat-checkbox" value="standard" checked>
-                Standard Time (Seconds, Hours, Days)
+                Standard Time (Seconds, Hours, Days, Weeks)
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" class="cat-checkbox" value="si" checked>
@@ -296,15 +297,15 @@
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" class="cat-checkbox" value="nature" checked>
-                Nature & Bio (Dog Years, Mayfly Lives)
+                Nature & Bio (Dog/Cat Years, Heartbeats, Sleep)
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" class="cat-checkbox" value="cosmic" checked>
-                Cosmic (Mars Years, Halley's Comet)
+                Cosmic (Mars Years, Jupiter, Light-Distance)
             </label>
             <label class="checkbox-label">
                 <input type="checkbox" class="cat-checkbox" value="historical" checked>
-                Historical (Olympiads, Scores, Jubilees)
+                Historical (Olympiads, Zodiac Cycles, Jubilees)
             </label>
         </div>
 
@@ -324,9 +325,9 @@
 const POP_CULTURE_NUMS = new Set([42, 69, 420, 666, 777, 1337, 80085, 8675309]);
 const CONSTANTS = new Set([314, 3141, 31415, 314159, 2718, 27182, 271828, 1618, 161803]);
 
-// --- 2. DYNAMIC MATH TESTERS ---
+// --- 2. ADVANCED TARGET GENERATORS ---
 function nextPowerOf10(num) {
-    return Math.pow(10, Math.ceil(Math.log10(num + 1)));
+    return Math.pow(10, Math.ceil(Math.log10(num + 0.00001)));
 }
 
 function nextSquare(num) {
@@ -339,25 +340,65 @@ function nextRepdigit(num) {
     let firstDigit = parseInt(s[0]);
     let candidate = parseInt(firstDigit.toString().repeat(s.length));
     
-    if (candidate >= n) return candidate;
+    if (candidate > num) return candidate;
     firstDigit++;
     if (firstDigit > 9) return parseInt("1".repeat(s.length + 1));
     return parseInt(firstDigit.toString().repeat(s.length));
 }
 
 function nextPalindrome(num) {
-    const s = (Math.floor(num) + 1).toString();
-    const len = s.length;
-    const leftHalf = s.slice(0, Math.ceil(len / 2));
-    const isOdd = len % 2 !== 0;
+    let current = Math.floor(num) + 1;
+    for (let i = current; i < current + 1000000; i++) {
+        let s = i.toString();
+        if (s === s.split('').reverse().join('')) return i;
+    }
+    return null;
+}
+
+function nextRoundNumber(num) {
+    if (num < 10) return Math.floor(num) + 1;
+    let magnitude = Math.pow(10, Math.floor(Math.log10(num)));
+    let normalized = num / magnitude;
     
-    const makePal = (left) => parseInt(isOdd ? left + left.split('').reverse().join('').slice(1) : left + left.split('').reverse().join(''));
+    // Steps: 1.0 -> 2.5 -> 5.0 -> 7.5 -> 10.0 -> etc.
+    let steps = [1.0, 2.0, 2.5, 5.0, 7.5, 10.0, 15.0, 20.0, 25.0, 50.0, 75.0, 100.0];
+    let nextStep = steps.find(s => s > normalized);
     
-    let candidate = makePal(leftHalf);
-    if (candidate > num) return candidate;
-    
-    const nextLeft = (parseInt(leftHalf) + 1).toString();
-    return makePal(nextLeft);
+    if (!nextStep) return magnitude * 10;
+    return Math.round(nextStep * magnitude);
+}
+
+function nextFibonacci(num) {
+    let a = 1, b = 1;
+    while (b <= num) {
+        let temp = a + b;
+        a = b;
+        b = temp;
+    }
+    return b;
+}
+
+function nextTriangular(num) {
+    let n = Math.floor((-1 + Math.sqrt(1 + 8 * num)) / 2) + 1;
+    return (n * (n + 1)) / 2;
+}
+
+function nextPowerOf2(num) {
+    let p = Math.ceil(Math.log2(num + 0.00001));
+    let val = Math.pow(2, p);
+    return val > num ? val : Math.pow(2, p + 1);
+}
+
+function nextSequential(num) {
+    const sequences = [
+        123, 1234, 12345, 123456, 1234567, 12345678, 123456789,
+        321, 4321, 54321, 654321, 7654321, 87654321, 987654321
+    ];
+    return sequences.find(s => s > num) || null;
+}
+
+function nextCleanFraction(num, step = 0.25) {
+    return (Math.floor(num / step) + 1) * step;
 }
 
 function getNextStaticNumber(currentVal, numberSet) {
@@ -365,7 +406,7 @@ function getNextStaticNumber(currentVal, numberSet) {
     return sorted.find(n => n > currentVal) || null;
 }
 
-// --- 3. METRIC DEFINITIONS (Milliseconds per unit) ---
+// --- 3. METRIC DEFINITIONS ---
 const msPerSecond = 1000;
 const msPerMinute = msPerSecond * 60;
 const msPerHour = msPerMinute * 60;
@@ -374,37 +415,41 @@ const msPerYear = msPerDay * 365.2425;
 
 const Metrics = [
     // Standard Time
-    { name: "Seconds", ms: msPerSecond, type: "micro", category: "standard" },
-    { name: "Hours", ms: msPerHour, type: "micro", category: "standard" },
-    { name: "Days", ms: msPerDay, type: "micro", category: "standard" },
-    { name: "Weeks", ms: msPerDay * 7, type: "micro", category: "standard" },
-    { name: "Fortnights", ms: msPerDay * 14, type: "micro", category: "standard" },
+    { name: "Seconds", ms: msPerSecond, mode: "high_frequency", category: "standard" },
+    { name: "Hours", ms: msPerHour, mode: "standard", category: "standard" },
+    { name: "Days", ms: msPerDay, mode: "standard", category: "standard" },
+    { name: "Weeks", ms: msPerDay * 7, mode: "standard", category: "standard" },
+    { name: "Fortnights", ms: msPerDay * 14, mode: "standard", category: "standard" },
+    { name: "Months", ms: msPerYear / 12, mode: "standard", category: "standard" },
 
     // SI Prefixes
-    { name: "Kiloseconds (ks)", ms: msPerSecond * 1000, type: "micro", category: "si" },
-    { name: "Megaseconds (Ms)", ms: msPerSecond * 1000000, type: "micro", category: "si" },
-    { name: "Gigaseconds (Gs)", ms: msPerSecond * 1000000000, type: "macro", category: "si" },
+    { name: "Kiloseconds (ks)", ms: msPerSecond * 1000, mode: "standard", category: "si" },
+    { name: "Megaseconds (Ms)", ms: msPerSecond * 1000000, mode: "standard", category: "si" },
+    { name: "Gigaseconds (Gs)", ms: msPerSecond * 1000000000, mode: "macro", category: "si" },
 
-    // Nerd & Tech
-    { name: "Microcenturies", ms: (100 * msPerYear) / 1000000, type: "micro", category: "tech" }, // ~52.59 min
-    { name: "Nanocenturies", ms: (100 * msPerYear) / 1000000000, type: "micro", category: "tech" }, // ~3.155 sec
-    { name: "Swatch Internet Beats", ms: 86400, type: "micro", category: "tech" }, // 1 beat = 86.4s
+    // Tech & Nerd
+    { name: "Microcenturies", ms: (100 * msPerYear) / 1000000, mode: "standard", category: "tech" },
+    { name: "Swatch Beats", ms: 86400, mode: "high_frequency", category: "tech" },
 
     // Nature & Biological
-    { name: "Dog Years", ms: msPerYear / 7, type: "micro", category: "nature" },
-    { name: "Mayfly Lifetimes", ms: msPerDay, type: "micro", category: "nature" }, // 1 day per lifespan
-    { name: "Cicada Brood Cycles (17-Yr)", ms: msPerYear * 17, type: "macro", category: "nature" },
+    { name: "Dog Years", ms: msPerYear / 7, mode: "standard", category: "nature" },
+    { name: "Cat Years", ms: msPerYear / 6, mode: "standard", category: "nature" },
+    { name: "Heartbeats (~70 bpm)", ms: msPerMinute / 70, mode: "high_frequency", category: "nature" },
+    { name: "Sleep Cycles (~90m)", ms: msPerMinute * 90, mode: "standard", category: "nature" },
 
     // Cosmic & Planetary
-    { name: "Mars Years", ms: msPerDay * 687, type: "macro", category: "cosmic" },
-    { name: "Halley's Comet Orbits", ms: msPerYear * 75.32, type: "macro", category: "cosmic" },
-    { name: "Galactic Ticks (1/1000th orbit)", ms: msPerYear * 230, type: "macro", category: "cosmic" },
-    { name: "Light-Minutes Lived", ms: msPerMinute, type: "micro", category: "cosmic" },
+    { name: "Mercury Years", ms: msPerDay * 87.97, mode: "macro", category: "cosmic" },
+    { name: "Venus Years", ms: msPerDay * 224.7, mode: "macro", category: "cosmic" },
+    { name: "Mars Years", ms: msPerDay * 686.98, mode: "macro", category: "cosmic" },
+    { name: "Jupiter Years", ms: msPerYear * 11.86, mode: "macro_fractional", category: "cosmic" },
+    { name: "Halley's Comet Orbits", ms: msPerYear * 75.32, mode: "macro_fractional", category: "cosmic" },
+    { name: "Light-Minutes Lived", ms: msPerMinute, mode: "high_frequency", category: "cosmic" },
 
     // Historical & Cultural
-    { name: "Olympiads (4-Yr)", ms: msPerYear * 4, type: "macro", category: "historical" },
-    { name: "Scores (20-Yr)", ms: msPerYear * 20, type: "macro", category: "historical" },
-    { name: "Jubilees (50-Yr)", ms: msPerYear * 50, type: "macro", category: "historical" }
+    { name: "Olympiads (4-Yr)", ms: msPerYear * 4, mode: "macro", category: "historical" },
+    { name: "Chinese Zodiac Cycles (12-Yr)", ms: msPerYear * 12, mode: "macro_fractional", category: "historical" },
+    { name: "Scores (20-Yr)", ms: msPerYear * 20, mode: "macro_fractional", category: "historical" },
+    { name: "Jubilees (50-Yr)", ms: msPerYear * 50, mode: "macro_fractional", category: "historical" }
 ];
 
 // --- 4. UI HELPER FUNCTIONS ---
@@ -423,7 +468,7 @@ function formatRelativeTime(targetMs, nowMs) {
     return `In ${(diffDays / 365.25).toFixed(1)} years`;
 }
 
-// Set default datetime picker to 20 years ago for easy testing
+// Set default datetime picker to 20 years ago
 window.addEventListener('DOMContentLoaded', () => {
     const defaultDate = new Date();
     defaultDate.setFullYear(defaultDate.getFullYear() - 20);
@@ -438,14 +483,14 @@ function calculateHolidays() {
     const birthDate = new Date(birthInput).getTime();
     const now = Date.now();
     
-    if (birthDate > now) {
-        return alert("Birth date must be in the past!");
-    }
+    if (birthDate > now) return alert("Birth date must be in the past!");
 
     const msLived = now - birthDate;
     const maxResults = parseInt(document.getElementById('max-results').value);
     
-    // Get checked categories
+    // Strict Cap: Max 115 human lifespan years
+    const maxLifespanMs = birthDate + (115 * msPerYear);
+
     const activeCategories = new Set(
         Array.from(document.querySelectorAll('.cat-checkbox:checked')).map(cb => cb.value)
     );
@@ -455,63 +500,90 @@ function calculateHolidays() {
     }
 
     let upcomingHolidays = [];
-
-    // Filter metrics by active categories
     const activeMetrics = Metrics.filter(m => activeCategories.has(m.category));
 
     activeMetrics.forEach(metric => {
         const currentVal = msLived / metric.ms;
-        
-        if (metric.type === "micro") {
-            const targets = [
+        let targets = [];
+
+        if (metric.mode === "standard") {
+            // Rich set of mathematical properties for medium metrics
+            targets.push(
+                { val: nextRoundNumber(currentVal), label: "Clean Round Number" },
                 { val: nextPowerOf10(currentVal), label: "Power of 10" },
                 { val: nextSquare(currentVal), label: "Perfect Square" },
                 { val: nextRepdigit(currentVal), label: "Repdigit" },
-                { val: nextPalindrome(currentVal), label: "Palindrome" }
-            ];
+                { val: nextPalindrome(currentVal), label: "Palindrome" },
+                { val: nextFibonacci(currentVal), label: "Fibonacci Milestone" },
+                { val: nextTriangular(currentVal), label: "Triangular Number" },
+                { val: nextPowerOf2(currentVal), label: "Power of 2 (Binary)" }
+            );
 
-            const nextPopCulture = getNextStaticNumber(currentVal, POP_CULTURE_NUMS);
-            if (nextPopCulture) targets.push({ val: nextPopCulture, label: "Meme/Pop Culture" });
-            
-            const nextConstant = getNextStaticNumber(currentVal, CONSTANTS);
-            if (nextConstant) targets.push({ val: nextConstant, label: "Math Constant" });
+            const seq = nextSequential(currentVal);
+            if (seq) targets.push({ val: seq, label: "Sequential Digits" });
 
-            targets.forEach(t => {
-                const targetTimestamp = birthDate + (t.val * metric.ms);
-                if (targetTimestamp > now) {
-                    upcomingHolidays.push({
-                        metricName: metric.name,
-                        targetVal: t.val,
-                        label: t.label,
-                        description: `You will be exactly <b>${t.val.toLocaleString()}</b> ${metric.name} old!`,
-                        timestamp: targetTimestamp
-                    });
-                }
-            });
+            const nextPop = getNextStaticNumber(currentVal, POP_CULTURE_NUMS);
+            if (nextPop) targets.push({ val: nextPop, label: "Meme/Pop Culture" });
+
+            const nextConst = getNextStaticNumber(currentVal, CONSTANTS);
+            if (nextConst) targets.push({ val: nextConst, label: "Math Constant" });
         } 
-        else if (metric.type === "macro") {
-            // For macro metrics, evaluate next whole integers
-            const nextInteger = Math.floor(currentVal) + 1;
-            const targetTimestamp = birthDate + (nextInteger * metric.ms);
+        else if (metric.mode === "high_frequency") {
+            // Restrict high-frequency metrics (Seconds, Beats) to avoid random palindrome spam
+            targets.push(
+                { val: nextRoundNumber(currentVal), label: "Clean Round Milestone" },
+                { val: nextPowerOf10(currentVal), label: "Power of 10" },
+                { val: nextPowerOf2(currentVal), label: "Power of 2 (Binary)" },
+                { val: nextRepdigit(currentVal), label: "Major Repdigit" }
+            );
+            const nextPop = getNextStaticNumber(currentVal, POP_CULTURE_NUMS);
+            if (nextPop) targets.push({ val: nextPop, label: "Meme/Pop Culture" });
+        } 
+        else if (metric.mode === "macro") {
+            // Whole integers for planetary orbits
+            const nextInt = Math.floor(currentVal) + 1;
+            targets.push({ val: nextInt, label: "Full Orbit / Milestone" });
+        } 
+        else if (metric.mode === "macro_fractional") {
+            // Clean quarters / halves for slow outer planets
+            const nextFrac = nextCleanFraction(currentVal, 0.25);
+            targets.push({ val: nextFrac, label: "Milestone Quarter" });
+        }
+
+        // Convert targets to timestamps
+        targets.forEach(t => {
+            if (!t.val || isNaN(t.val)) return;
             
-            if (targetTimestamp > now) {
+            const targetTimestamp = birthDate + (t.val * metric.ms);
+            
+            // Filter: Must be in the future AND within human lifespan (115 yrs)
+            if (targetTimestamp > now && targetTimestamp <= maxLifespanMs) {
+                let formattedVal = Number.isInteger(t.val) ? t.val.toLocaleString() : t.val.toFixed(2);
                 upcomingHolidays.push({
                     metricName: metric.name,
-                    targetVal: nextInteger,
-                    label: "Macro Milestone",
-                    description: `You will reach exactly <b>${nextInteger.toLocaleString()}</b> ${metric.name}!`,
+                    targetVal: t.val,
+                    label: t.label,
+                    description: `You will reach <b>${formattedVal}</b> ${metric.name}!`,
                     timestamp: targetTimestamp
                 });
             }
-        }
+        });
     });
 
     // Sort chronologically
     upcomingHolidays.sort((a, b) => a.timestamp - b.timestamp);
 
-    // Limit output to user choice
-    const slicedResults = upcomingHolidays.slice(0, maxResults);
-    renderHolidays(slicedResults, now);
+    // Deduplicate near-simultaneous events (within 60 seconds of each other)
+    let deduplicated = [];
+    upcomingHolidays.forEach(h => {
+        const isDuplicate = deduplicated.some(existing => 
+            Math.abs(existing.timestamp - h.timestamp) < 60000 && 
+            existing.description === h.description
+        );
+        if (!isDuplicate) deduplicated.push(h);
+    });
+
+    renderHolidays(deduplicated.slice(0, maxResults), now);
 }
 
 function renderHolidays(holidays, now) {
@@ -522,7 +594,7 @@ function renderHolidays(holidays, now) {
     countSpan.textContent = `Showing top ${holidays.length} upcoming events`;
 
     if (holidays.length === 0) {
-        list.innerHTML = `<li class="holiday-item"><div class="holiday-info">No upcoming holidays found for selected categories.</div></li>`;
+        list.innerHTML = `<li class="holiday-item"><div class="holiday-info">No upcoming holidays found within a human lifespan for selected categories.</div></li>`;
         document.getElementById('results').style.display = 'block';
         return;
     }
